@@ -1,66 +1,78 @@
+// Import necessary modules from the Three.js library
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/OrbitControls.js";
 
-// Ensure you have a function to create a star field or use a simple method to create stars
+// Function to create a star field with randomly positioned stars
 function createStarField(numStars) {
-    const starsGeometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(numStars * 3);
+    const starsGeometry = new THREE.BufferGeometry(); // Create geometry to hold the star positions
+    const positions = new Float32Array(numStars * 3); // Array to store 3D positions for each star (x, y, z)
     
     for (let i = 0; i < numStars; i++) {
-        positions[i * 3] = (Math.random() - 0.5) * 2000; // X
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 2000; // Y
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 2000; // Z
+        // Randomly position each star in a 3D space
+        positions[i * 3] = (Math.random() - 0.5) * 2000; // X position, spread out in a 3D space
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 2000; // Y position
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 2000; // Z position
     }
     
+    // Set the positions of the stars in the geometry
     starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     
+    // Create a material for the stars (white color)
     const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+    
+    // Return a Points object, which is a collection of points (stars) with geometry and material
     return new THREE.Points(starsGeometry, starsMaterial);
 }
 
+// Set up the scene dimensions and renderer
 const w = window.innerWidth;
 const h = window.innerHeight;
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
-camera.position.z = 5;  // Set camera position to view the object
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(w, h);
-document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); // Create a new Three.js scene
+const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000); // Set up the camera (field of view, aspect ratio, near and far planes)
+camera.position.z = 5;  // Move the camera back a bit to view the objects
+const renderer = new THREE.WebGLRenderer({ antialias: true }); // Set up the WebGL renderer with antialiasing
+renderer.setSize(w, h); // Set the size of the rendering canvas to the window's dimensions
+document.body.appendChild(renderer.domElement); // Append the renderer's canvas to the DOM
 
-// Earth Group
+// Create a group to hold the Earth and rotate it
 const earthGroup = new THREE.Group();
-earthGroup.rotation.z = -23.4 * Math.PI / 180; // Corrected to degrees
-scene.add(earthGroup);
+earthGroup.rotation.z = -23.4 * Math.PI / 180; // Set the rotation of the Earth (in degrees, converted to radians)
+scene.add(earthGroup); // Add the group to the scene
 
-// Icosahedron geometry and material (Earth)
-const geo = new THREE.IcosahedronGeometry(1, 12);
+// Icosahedron geometry (a spherical shape) and material for the Earth
+const geo = new THREE.IcosahedronGeometry(1, 12); // Create the geometry for the Earth (a detailed sphere)
 const mat = new THREE.MeshStandardMaterial({
-    map: new THREE.TextureLoader().load("8k_earth_daymap.jpg") // Ensure this path is correct
+    map: new THREE.TextureLoader().load("8k_earth_daymap.jpg") // Load the Earth texture (make sure the path is correct)
 });
-const earthMesh = new THREE.Mesh(geo, mat);
-earthGroup.add(earthMesh);
+const earthMesh = new THREE.Mesh(geo, mat); // Create the mesh using the geometry and material
+earthGroup.add(earthMesh); // Add the Earth mesh to the group
 
-// Create and add stars
-const stars = createStarField(2000);
-scene.add(stars);
+// Create and add a star field to the scene
+const stars = createStarField(2000); // Call the function to create 2000 stars
+scene.add(stars); // Add the stars to the scene
 
-// Light  
-const hemiLight = new THREE.HemisphereLight(0x99ffff, 0xaa55aa, 1.0);
-scene.add(hemiLight);
+// Add lighting to the scene (Hemisphere light, simulating sunlight)
+const hemiLight = new THREE.HemisphereLight(0x99ffff, 0xaa55aa, 1.0); // Create a light with two colors (sky and ground colors)
+scene.add(hemiLight); // Add the light to the scene
 
-// OrbitControls
+// Set up orbit controls to allow camera rotation with the mouse
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // Enable damping (smooth camera movement)
+controls.dampingFactor = 0.03; // Set the damping factor for camera rotation
 
+// Animation loop to continuously update the scene
 function animate() {
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate); // Request the next frame for animation
 
-    // Rotation of the Earth mesh
-    earthMesh.rotation.y += 0.002;
+    // Rotate the Earth mesh slowly around the y-axis
+    earthMesh.rotation.y += 0.002; // Adjust the speed of Earth's rotation
 
-    // Update controls (for orbiting with mouse)
+    // Update the controls to handle user input (mouse movement)
     controls.update();
 
+    // Render the scene from the perspective of the camera
     renderer.render(scene, camera);
 }
 
+// Start the animation loop
 animate();
