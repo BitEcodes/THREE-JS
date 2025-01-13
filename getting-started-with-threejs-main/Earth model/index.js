@@ -52,8 +52,14 @@ const stars = createStarField(2000); // Call the function to create 2000 stars
 scene.add(stars); // Add the stars to the scene
 
 // Add lighting to the scene (Hemisphere light, simulating sunlight)
-const hemiLight = new THREE.HemisphereLight(0x99ffff, 0xaa55aa, 1.0); // Create a light with two colors (sky and ground colors)
-scene.add(hemiLight); // Add the light to the scene
+//const hemiLight = new THREE.HemisphereLight(0x99ffff, 0xaa55aa, 1.0); // Create a light with two colors (sky and ground colors)
+//scene.add(hemiLight); // Add the light to the scene
+
+
+
+const sunLight =new THREE.DirectionalLight(0xffffff);
+sunLight.position.set(-2,0.5,1.5)
+scene.add(sunLight)
 
 // Set up orbit controls to allow camera rotation with the mouse
 const controls = new OrbitControls(camera, renderer.domElement);

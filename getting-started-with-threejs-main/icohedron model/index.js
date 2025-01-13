@@ -44,8 +44,9 @@ wireMesh.scale.setScalar(1.001); // Scaling it slightly bigger to make it a wire
 mesh.add(wireMesh); // Adding the wireframe mesh to the icosahedron
 
 // Adding a hemisphere light to the scene (for ambient lighting)
-const hemiLight = new THREE.HemisphereLight(0x99ffff, 0xaa55aa, 1.0); // Light color and intensity
-scene.add(hemiLight); // Adding the light to the scene
+//const hemiLight = new THREE.HemisphereLight(0x99ffff, 0xaa55aa, 1.0); // Light color and intensity
+//scene.add(hemiLight); // Adding the light to the scene
+
 
 // The animate function that runs the rendering loop
 function animate() {
